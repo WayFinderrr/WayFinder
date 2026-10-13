@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WayFinder — Pitch</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231f4e79'/%3E%3Cpath d='M16 6l2.4 8.2L16 26l-2.4-11.8L16 6z' fill='%23f6f1e8'/%3E%3C/svg%3E"
+    />
+    <style>
+      :root {
+        --bg: #efeae2;
+        --card: #fffdf9;
+        --paper: #f6f1e8;
+        --ink: #1c1915;
+        --muted: #5f564c;
+        --faint: #8a8175;
+        --terra: #b8432a;
+        --sea: #1f4e79;
+        --line: rgba(28, 25, 21, 0.12);
+        --serif: "Instrument Serif", Georgia, serif;
+        --sans: Figtree, system-ui, sans-serif;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font-family: var(--sans); }
+      button { font: inherit; color: inherit; cursor: pointer; }
+      .deck { height: 100%; }
+      .slide {
+        display: none;
+        height: 100%;
+        padding: 64px 72px 88px;
+        position: relative;
+      }
+      .slide.on { display: flex; flex-direction: column; }
+      .slide.balanced { justify-content: center; }
+      .cover-copy .pill { color: #f6f1e8; border-color: rgba(246, 241, 232, 0.45); }
+      .kicker {
+        margin: 0 0 14px;
+        color: var(--sea);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+      h1 {
+        margin: 0;
+        font-family: var(--serif);
+        font-weight: 400;
+        letter-spacing: -0.035em;
+        line-height: 0.94;
+        font-size: clamp(56px, 6.4vw, 92px);
+      }
+      h1 em, h2 em { font-style: italic; color: var(--terra); }
+      .lede { max-width: 740px; margin: 22px 0 0; color: var(--muted); font-size: 22px; line-height: 1.45; }
+      .grow { flex: 1; }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: var(--serif);
+        font-size: 28px;
+        letter-spacing: -0.03em;
+      }
+      .toprow { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
+      .pill {
+        height: 28px;
+        display: inline-flex;
+        align-items: center;
+        padding: 0 10px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        color: var(--sea);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .cover { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 36px; align-items: center; height: 100%; }
+      .cover-photo {
+        position: relative;
+        height: min(68vh, 620px);
+        border-radius: 28px;
+        overflow: hidden;
+        background: #ddd6c8;
+      }
+      .cover-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .cover-copy {
+        position: absolute;
+        left: 0; right: 0; bottom: 0;
+        padding: 22px;
+        color: #f6f1e8;
+        background: linear-gradient(to top, rgba(28, 22, 18, 0.82), rgba(28, 22, 18, 0));
+      }
+      .cover-copy h2 { margin: 8px 0 4px; font-family: var(--serif); font-weight: 400; font-size: 48px; letter-spacing: -0.03em; }
+      .cover-copy p { margin: 0; }
+      .actions { display: flex; gap: 10px; margin-top: 28px; flex-wrap: wrap; }
+      .btn {
+        height: 46px;
+        padding: 0 18px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        background: transparent;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        color: var(--ink);
+      }
+      .btn.primary { background: var(--terra); color: #fffaf6; border-color: transparent; }
+      .cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 36px; }
+      .cols article, .pair article, .book article, .path li, .road article {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 20px 20px 22px;
+      }
+      .num { font-family: var(--serif); color: var(--terra); font-size: 28px; }
+      .cols h3, .pair h3, .road h3 { margin: 10px 0 8px; font-size: 22px; letter-spacing: -0.02em; }
+      .cols p, .pair p, .road p, .path p { margin: 0; color: var(--muted); line-height: 1.45; }
+      .insight { justify-content: flex-end; }
+      .insight h1 { max-width: 16ch; }
+      .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 28px; }
+      .pair article h3 { font-family: var(--serif); font-size: 40px; font-weight: 400; letter-spacing: -0.03em; }
+      .pair .tag { color: var(--terra); font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+      .pair article.night .tag { color: var(--sea); }
+      .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-top: 28px; }
+      .steps article { border-top: 1px solid var(--ink); padding-top: 16px; }
+      .steps h3 { margin: 8px 0; font-size: 22px; }
+      .steps p { margin: 0; color: var(--muted); }
+      .book { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-top: 28px; }
+      .book article { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
+      .book img { height: 188px; width: 100%; object-fit: cover; display: block; }
+      .book article > div { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; }
+      .book strong { display: block; font-family: var(--serif); font-size: 32px; font-weight: 400; letter-spacing: -0.03em; line-height: 1; }
+      .book span { color: var(--faint); font-size: 13px; }
+      .book .place { color: var(--sea); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+      .facts { display: flex; gap: 28px; margin-top: 22px; color: var(--muted); font-size: 15px; }
+      .facts b { color: var(--ink); font-weight: 700; }
+      .yield { color: var(--terra); font-weight: 700; }
+      .path { list-style: none; padding: 0; margin: 28px 0 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+      .path b { display: block; font-family: var(--serif); font-size: 28px; font-weight: 400; margin: 8px 0; }
+      .road { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 32px; }
+      .close { justify-content: space-between; }
+      .close h1 { max-width: 12ch; }
+      .chrome {
+        position: fixed;
+        left: 72px;
+        right: 72px;
+        bottom: 22px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        z-index: 5;
+      }
+      .chrome button {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 1px solid var(--line);
+        background: var(--card);
+      }
+      .chrome button:disabled { opacity: 0.35; cursor: default; }
+      .track { flex: 1; height: 2px; background: rgba(28, 25, 21, 0.12); border-radius: 99px; overflow: hidden; }
+      .track i { display: block; height: 100%; background: var(--terra); width: 0; }
+      .count { font-size: 13px; letter-spacing: 0.08em; color: var(--faint); min-width: 64px; text-align: right; }
+      @media (max-width: 980px) {
+        .slide { padding: 28px 22px 84px; }
+        .cover, .cols, .pair, .steps, .book, .path, .road { grid-template-columns: 1fr; }
+        .cover-photo { height: 240px; }
+        h1 { font-size: 46px; }
+        .chrome { left: 22px; right: 22px; }
+        .book article { min-height: 0; }
+      }
+      @media print {
+        .chrome { display: none; }
+        .slide, .slide.on { display: flex; height: auto; min-height: 100vh; break-after: page; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="deck" id="deck">
+      <section class="slide on">
+        <div class="cover">
+          <div>
+            <div class="brand">
+              <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
+                <rect width="28" height="28" rx="8" fill="#1f4e79" />
+                <path d="M14 5.2 16.5 13 14 23.2 11.5 13 14 5.2Z" fill="#f6f1e8" />
+                <circle cx="14" cy="13.2" r="1.7" fill="#b8432a" />
+              </svg>
+              WayFinder
+            </div>
+            <p class="kicker" style="margin-top: 48px">Solana · real-world assets</p>
+            <h1>Fraction the house.<br /><em>Book the night.</em></h1>
+            <p class="lede">
+              A protocol for tokenized stays. An SPV holds the place. Ownership fractions carry the yield. Night rights book it. Both settle on Solana.
+            </p>
+            <div class="actions">
+              <a class="btn primary" href="#2">Start the pitch</a>
+              <a class="btn" href="/">Open the product</a>
+            </div>
+          </div>
+          <div class="cover-photo">
+            <img src="/photos/solara.jpg" alt="Villa Solara in Marbella" />
+            <div class="cover-copy">
+              <span class="pill">Featured · Marbella</span>
+              <h2>Villa Solara</h2>
+              <p>WF-MAR · 1.25 SOL · about $190</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide balanced">
+        <p class="kicker">The problem</p>
+        <h1>The house is trapped.<br /><em>The night is not a market.</em></h1>
+        <div class="cols">
+          <article>
+            <div class="num">01</div>
+            <h3>Ownership is the whole deed</h3>
+            <p>A buyer who wants the yield has to buy the building. There is no clean fraction, and no standard way to hold it beside everything else in a wallet.</p>
+          </article>
+          <article>
+            <div class="num">02</div>
+            <h3>Bookings never settle on-chain</h3>
+            <p>Guests pay an operator. The calendar, the payment, and the right to stay live in three different systems. None of them can be resold.</p>
+          </article>
+          <article>
+            <div class="num">03</div>
+            <h3>Nothing composes</h3>
+            <p>A week in a villa cannot be collateral. A share of the rent cannot sit in another protocol. The asset ends where the property company ends.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="slide insight">
+        <p class="kicker">The insight</p>
+        <h1>A place is two products.<br />The building earns.<br /><em>The night is used.</em></h1>
+        <p class="lede">They should not be the same token. One legal owner. Two rights. Issued where payments already clear.</p>
+      </section>
+
+      <section class="slide balanced">
+        <p class="kicker">WayFinder</p>
+        <h1>Wrap the title.<br /><em>Issue the rights.</em></h1>
+        <p class="lede">
+          Each asset sits in a local SPV. Token holders own economic rights in that vehicle, not the deed. Night rights are a license to occupy, with blackout dates and house rules.
+        </p>
+        <div class="pair">
+          <article>
+            <div class="tag">Ownership · yield</div>
+            <h3>Fractions</h3>
+            <p>A Token-2022 share of the SPV. It claims net operating yield and can be posted as collateral without giving the yield up.</p>
+          </article>
+          <article class="night">
+            <div class="tag">Usage · exclusive</div>
+            <h3>Nights</h3>
+            <p>One token, one night, the whole property. Book it, sell it, or redeem it. It is not equity, so it stays out of the vault.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="slide balanced">
+        <p class="kicker">How it works</p>
+        <h1>Four moves.<br /><em>Then it composes.</em></h1>
+        <div class="steps">
+          <article>
+            <div class="num">01</div>
+            <h3>Wrap</h3>
+            <p>A local SPV holds the title or the operating lease. One vehicle per asset.</p>
+          </article>
+          <article>
+            <div class="num">02</div>
+            <h3>Issue</h3>
+            <p>Ownership fractions and a capped night inventory mint on Solana.</p>
+          </article>
+          <article>
+            <div class="num">03</div>
+            <h3>Settle</h3>
+            <p>Guests book nights. Holders trade either instrument on the secondary book.</p>
+          </article>
+          <article>
+            <div class="num">04</div>
+            <h3>Compose</h3>
+            <p>Fractions lock in the vault, keep accruing yield, and borrow against a 55% LTV.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="slide balanced">
+        <p class="kicker">Opening book · illustrative</p>
+        <h1>Five homes.<br /><em>$8.51M appraised.</em></h1>
+        <div class="book">
+          <article>
+            <img src="/photos/solara.jpg" alt="Villa Solara" />
+            <div>
+              <span class="place">Marbella · 8.4%</span>
+              <strong>Solara</strong>
+              <span>WF-MAR · $1.90M</span>
+            </div>
+          </article>
+          <article>
+            <img src="/photos/kumo.jpg" alt="Kumo House" />
+            <div>
+              <span class="place">Kyoto · 6.2%</span>
+              <strong>Kumo</strong>
+              <span>WF-KYO · $1.22M</span>
+            </div>
+          </article>
+          <article>
+            <img src="/photos/cenote.jpg" alt="Casa Cenote" />
+            <div>
+              <span class="place">Tulum · 11.4%</span>
+              <strong>Cenote</strong>
+              <span>WF-TUL · $0.99M</span>
+            </div>
+          </article>
+          <article>
+            <img src="/photos/lumen.jpg" alt="Chalet Lumen" />
+            <div>
+              <span class="place">Zermatt · 4.8%</span>
+              <strong>Lumen</strong>
+              <span>WF-ZER · $3.80M</span>
+            </div>
+          </article>
+          <article>
+            <img src="/photos/alfama.jpg" alt="Atelier Alfama" />
+            <div>
+              <span class="place">Lisbon · 9.2%</span>
+              <strong>Alfama</strong>
+              <span>WF-LIS · $0.61M</span>
+            </div>
+          </article>
+        </div>
+        <div class="facts">
+          <span><b>48,000</b> ownership fractions</span>
+          <span><b>5</b> local SPVs</span>
+          <span><b>4.8–11.4%</b> illustrative yield</span>
+          <span>Same book as the product. Not live volume.</span>
+        </div>
+      </section>
+
+      <section class="slide balanced">
+        <p class="kicker">Composability</p>
+        <h1>The fraction keeps working<br /><em>while it is locked.</em></h1>
+        <div class="cols">
+          <article>
+            <div class="num">55%</div>
+            <h3>Borrow against it</h3>
+            <p>Post ownership fractions and draw USDC. Liquidation sits at 70%, so a full loan still has a health buffer.</p>
+          </article>
+          <article>
+            <div class="num">Yield</div>
+            <h3>Rent does not stop</h3>
+            <p>Locked fractions keep their share of net operating income. Collateral is not a sale.</p>
+          </article>
+          <article>
+            <div class="num">Nights</div>
+            <h3>Usage stays out</h3>
+            <p>A night token is a right to sleep there. It can be transferred. It cannot back a loan.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="slide balanced">
+        <p class="kicker">In the product</p>
+        <h1>One pass.<br /><em>Five actions.</em></h1>
+        <ol class="path">
+          <li>
+            <div class="num">01</div>
+            <b>Connect</b>
+            <p>A demo wallet, already holding three of the homes.</p>
+          </li>
+          <li>
+            <div class="num">02</div>
+            <b>Buy</b>
+            <p>Primary fractions of Villa Solara, settled in SOL.</p>
+          </li>
+          <li>
+            <div class="num">03</div>
+            <b>Book</b>
+            <p>Three open nights, paid in SOL or redeemed from tokens.</p>
+          </li>
+          <li>
+            <div class="num">04</div>
+            <b>Trade</b>
+            <p>Fill someone else’s order on the secondary book.</p>
+          </li>
+          <li>
+            <div class="num">05</div>
+            <b>Borrow</b>
+            <p>Lock fractions and draw USDC from the vault.</p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="slide balanced">
+        <p class="kicker">Path</p>
+        <h1>From a demo book<br /><em>to a live SPV.</em></h1>
+        <div class="road">
+          <article>
+            <div class="tag" style="color: var(--terra); font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase">Now</div>
+            <h3>The protocol, in the browser</h3>
+            <p>Issue, book, trade, and borrow on a simulated Solana settlement. The legal story and the token story are already the same product.</p>
+          </article>
+          <article>
+            <div class="tag" style="color: var(--sea); font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase">Next</div>
+            <h3>One operator, one vehicle</h3>
+            <p>A single exclusive-use home, a real SPV, and a calendar the night token can actually redeem against.</p>
+          </article>
+          <article>
+            <div class="tag" style="color: var(--ink); font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase">Then</div>
+            <h3>More jurisdictions</h3>
+            <p>Repeat the wrapper. Let fractions move into other Solana protocols as collateral, without rewriting the stay.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="slide close">
+        <div class="toprow">
+          <div class="brand">
+            <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
+              <rect width="28" height="28" rx="8" fill="#1f4e79" />
+              <path d="M14 5.2 16.5 13 14 23.2 11.5 13 14 5.2Z" fill="#f6f1e8" />
+              <circle cx="14" cy="13.2" r="1.7" fill="#b8432a" />
+            </svg>
+            WayFinder
+          </div>
+          <span class="pill">Solana</span>
+        </div>
+        <div class="grow"></div>
+        <h1>Own the building.<br /><em>Keep the nights liquid.</em></h1>
+        <div class="actions">
+          <a class="btn primary" href="/">Open the demo</a>
+        </div>
+      </section>
+    </main>
+
+    <div class="chrome">
+      <button type="button" id="prev" aria-label="Previous slide">‹</button>
+      <button type="button" id="next" aria-label="Next slide">›</button>
+      <div class="track" aria-hidden="true"><i id="bar"></i></div>
+      <div class="count" id="count">01 / 10</div>
+    </div>
+
+    <script>
+      const slides = [...document.querySelectorAll(".slide")]
+      let index = 0
+      const count = document.getElementById("count")
+      const bar = document.getElementById("bar")
+      const prev = document.getElementById("prev")
+      const next = document.getElementById("next")
+
+      function show(nextIndex) {
+        index = Math.max(0, Math.min(slides.length - 1, nextIndex))
+        slides.forEach((slide, i) => slide.classList.toggle("on", i === index))
+        count.textContent = String(index + 1).padStart(2, "0") + " / " + String(slides.length).padStart(2, "0")
+        bar.style.width = ((index + 1) / slides.length) * 100 + "%"
+        prev.disabled = index === 0
+        next.disabled = index === slides.length - 1
+        history.replaceState(null, "", "#" + (index + 1))
+      }
+
+      function fromHash() {
+        const n = Number(location.hash.replace("#", ""))
+        show(Number.isFinite(n) && n > 0 ? n - 1 : 0)
+      }
+
+      prev.addEventListener("click", () => show(index - 1))
+      next.addEventListener("click", () => show(index + 1))
+      document.addEventListener("keydown", (event) => {
+        if (["ArrowRight", "PageDown", " "].includes(event.key)) {
+          event.preventDefault()
+          show(index + 1)
+        }
+        if (["ArrowLeft", "PageUp", "Backspace"].includes(event.key)) {
+          event.preventDefault()
+          show(index - 1)
+        }
+        if (event.key === "Home") show(0)
+        if (event.key === "End") show(slides.length - 1)
+      })
+      window.addEventListener("hashchange", fromHash)
+      fromHash()
+    </script>
+  </body>
+</html>
